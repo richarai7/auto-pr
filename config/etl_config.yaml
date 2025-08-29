@@ -1,0 +1,98 @@
+# ETL Configuration for MySQL Data Pipeline
+# =========================================
+
+# Source Database Configuration
+source_database:
+  host: "localhost"
+  port: 3306
+  database: "app_db"
+  user: "etl_user"
+  password: "SecureETLPassword123!"
+  pool_size: 5
+
+# Target Database Configuration (can be same as source)
+target_database:
+  host: "localhost"
+  port: 3306
+  database: "app_db"
+  user: "etl_user"
+  password: "SecureETLPassword123!"
+  pool_size: 3
+
+# ETL Processing Settings
+batch_size: 1000
+retry_attempts: 3
+retry_delay: 5
+
+# Logging Configuration
+log_level: "INFO"
+log_file: "etl_pipeline.log"
+
+# Data Processing Rules
+customer_summary:
+  # Customer segmentation rules
+  segments:
+    new_threshold_orders: 0
+    regular_threshold_orders: 1
+    vip_threshold_spent: 5000
+    vip_threshold_orders: 20
+    churn_threshold_days: 365
+    at_risk_threshold_days: 180
+
+  # Update frequency
+  refresh_interval_hours: 24
+
+# Product Performance Analysis
+product_performance:
+  # Performance tiers based on revenue
+  performance_tiers:
+    top_threshold: 10000
+    high_threshold: 5000
+    medium_threshold: 1000
+    
+  # Velocity categories based on sales frequency
+  velocity_categories:
+    very_fast_threshold: 50  # sales per month
+    fast_threshold: 20
+    normal_threshold: 5
+
+# Daily Sales Summary
+daily_sales:
+  # Metrics to calculate
+  include_customer_acquisition: true
+  include_geographic_breakdown: true
+  include_category_performance: true
+  
+  # Historical data processing
+  backfill_days: 7
+
+# Environment-specific configurations
+environments:
+  development:
+    source_database:
+      host: "localhost"
+      user: "dev_user"
+      password: "DevPassword123!"
+    batch_size: 100
+    log_level: "DEBUG"
+    
+  staging:
+    source_database:
+      host: "staging-mysql.example.com"
+      user: "etl_staging"
+      password: "${ETL_STAGING_PASSWORD}"
+    batch_size: 500
+    
+  production:
+    source_database:
+      host: "prod-mysql.example.com"
+      user: "etl_prod"
+      password: "${ETL_PROD_PASSWORD}"
+      pool_size: 10
+    target_database:
+      host: "prod-mysql.example.com"
+      user: "etl_prod"
+      password: "${ETL_PROD_PASSWORD}"
+      pool_size: 8
+    batch_size: 2000
+    retry_attempts: 5
